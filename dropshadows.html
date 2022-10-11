@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Drop Shadows</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js">
+    </script>
+    <style>
+        /* #photo {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        } */
+
+        .shadow-big {
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 1.975) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <p>Paste your image here…</p>
+    <div id="photo">
+        <div>
+            <img id="container" />
+        </div>
+    </div>
+    <button onclick="takeshot()">save image to clipboard</button>
+    <br><br><br>
+    <div id="output"></div>
+    <script>
+
+        document.onpaste = function (pasteEvent) {
+            // consider the first item (can be easily extended for multiple items)
+            var item = pasteEvent.clipboardData.items[0];
+
+            if (item.type.indexOf("image") === 0) {
+                var blob = item.getAsFile();
+
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    document.getElementById("container").src = event.target.result;
+                };
+
+                reader.readAsDataURL(blob);
+                let img = document.getElementById("container");
+                img.className = "shadow-big mb-5 bg-white rounded";
+
+
+            }
+        }
+
+        function takeshot() {
+            let div =
+                document.getElementById('photo');
+
+            // Use the html2canvas
+            // function to take a screenshot
+            // and append it
+            // to the output div
+            html2canvas(div).then(
+                function (canvas) {
+                    document
+                        .getElementById('output')
+                        .appendChild(canvas);
+
+                    canvas.toBlob(blob => {
+                        //debugger;
+                        let data = [new ClipboardItem({ [blob.type]: blob })];
+
+                        navigator.clipboard.write(data).then(() => {
+                            alert('copied')
+                        }, (err) => {
+                            alert('error');
+                        })
+                    });
+                })
+        }
+
+    </script>
+</body>
+
+</html>
